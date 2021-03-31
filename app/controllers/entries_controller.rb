@@ -3,6 +3,7 @@ class EntriesController < ApplicationController
 
   # GET /entries or /entries.json
   def index
+    @entry = Entry.new
     @entries = Entry.all
   end
 

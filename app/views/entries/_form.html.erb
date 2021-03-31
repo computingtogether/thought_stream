@@ -12,8 +12,11 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :thoughts %>
-    <%= form.text_field :thoughts %>
+    <%= form.text_area :thoughts, 
+                       class: "text-area__thoughts", 
+                       placeholder: "Write down what's on your mind...",                        
+                       rows: 3, 
+                       autofocus: true %>
   </div>
 
   <div class="actions">

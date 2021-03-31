@@ -24,27 +24,67 @@ end
 
 I want this site to be nice and streamlined, so the input form for new brain dumps will be on the same page as the color coded chronological display of brain dumps. To accomplish this add the code from the new method in app/controllers/dump_entries_controller.rb to the index method.
 
->app/controllers/dump_entries_controller.rb
+>app/controllers/entries_controller.rb
 ```ruby
-class DumpEntriesController < ApplicationController
-  before_action :set_dump_entry, only: %i[ show edit update destroy ]
+class EntriesController < ApplicationController
+  before_action :set_entry, only: %i[ show edit update destroy ]
 
-  # GET /dump_entries or /dump_entries.json
+  # GET /entries or /entries.json
   def index
-    @dump_entry = DumpEntry.new
-    @dump_entries = DumpEntry.all
+    @entry = Entry.new
+    @entries = Entry.all
   end
 
-  # GET /dump_entries/1 or /dump_entries/1.json
+  # GET /entries/1 or /entries/1.json
   def show
   end
 
-  # GET /dump_entries/new
+  # GET /entries/new
   def new
-    @dump_entry = DumpEntry.new
+    @entry = Entry.new
   end
+
+  ...
+```
+Render the partial _form.html.erb that comes free with generating a scaffold to the top of the index page of entries.
+
+>app/views/entries/index.html.erb
+```erb
+<p id="notice"><%= notice %></p>
+
+<%= render 'form', entry: @entry %>  // add this line
+
+<h1>Entries</h1>
+...
 ```
 
 # Adding Style
 
 rename app/assets/stylesheets/application.css to  app/assets/stylesheets/application.scss
+
+Running rails s in the command line and visiting http://localhost:3000/, you can see that the form for adding new thoughts is very small. Head to app/views/entries/_form.html.erb and give the text field a class name "text-area__thoughts" (it's BEMy), change text_field to text_area to give more space, set a placeholder for the text area, and let's make  it 3 rows high. Finally, let's set this text area to autofocus to create a a good user experience for this app. 
+Now that we have a placeholder we can delete the default for label that rails gave us. 
+Delete <%= form.label :thoughts %> from the entries _form.html.erb partial. 
+
+
+>app/views/entries/_form.html.erb
+
+```erb
+  <div class="field">
+    <%= form.text_area :thoughts, 
+                       class: "text-area__thoughts", 
+                       placeholder: "Write down what's on your mind...",                        
+                       rows: 3, 
+                       autofocus: true %>
+  </div>
+
+```
+
+Set the width of the text area with scss
+>app/assets/stylesheets/entries.scss
+```scss
+.text-area__thoughts{
+  width: 99%;
+}
+```
+
