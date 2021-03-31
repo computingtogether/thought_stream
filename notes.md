@@ -62,7 +62,7 @@ Render the partial _form.html.erb that comes free with generating a scaffold to 
 
 rename app/assets/stylesheets/application.css to  app/assets/stylesheets/application.scss
 
-Running rails s in the command line and visiting http://localhost:3000/, you can see that the form for adding new thoughts is very small. Head to app/views/entries/_form.html.erb and give the text field a class name "text-area__thoughts" (it's BEMy), change text_field to text_area to give more space, set a placeholder for the text area, and let's make  it 3 rows high. Finally, let's set this text area to autofocus to create a a good user experience for this app. 
+Running rails s in the command line and visiting http://localhost:3000/, you can see that the form for adding new thoughts is very small. Head to app/views/entries/_form.html.erb and give the text field a class name "text-field__thoughts", set a placeholder for the text area. Finally, let's set this text area to autofocus to create a a good user experience for this app. 
 Now that we have a placeholder we can delete the default for label that rails gave us. 
 Delete <%= form.label :thoughts %> from the entries _form.html.erb partial. 
 
@@ -71,20 +71,74 @@ Delete <%= form.label :thoughts %> from the entries _form.html.erb partial.
 
 ```erb
   <div class="field">
-    <%= form.text_area :thoughts, 
-                       class: "text-area__thoughts", 
-                       placeholder: "Write down what's on your mind...",                        
+    <%= form.text_field :thoughts, 
+                       class: "text-field__thoughts", 
+                       placeholder: "Write down what's on your mind seperated by commas...",                        
                        rows: 3, 
                        autofocus: true %>
   </div>
-
 ```
 
 Set the width of the text area with scss
 >app/assets/stylesheets/entries.scss
 ```scss
-.text-area__thoughts{
+.text-field__thoughts{
   width: 99%;
 }
 ```
 
+To make a fluid onscreen creation of a new thoughts entry, in entries_controller.rb change:
+
+```ruby
+format.html { redirect_to @entry, notice: "Entry was successfully created." }
+```
+
+to 
+```ruby
+format.html { redirect_to entries_path, notice: "Entry was successfully created." }
+```
+
+in views/entries/edit change:
+
+```ruby
+<h1>Editing Entry</h1>
+
+<%= render 'form', entry: @entry %>
+
+<%= link_to 'Show', @entry %> |
+<%= link_to 'Back', entries_path %>
+
+```
+to 
+
+```ruby
+<h1>Editing Entry</h1>
+
+<%= render 'form', entry: @entry %>
+
+<%= link_to 'Delete', @entry, method: :delete, data: { confirm: 'Are you sure?' } %>  |  
+<%= link_to 'Back', entries_path %>
+```
+
+Now lets clean up views/entries/index.html.erb to look like:
+
+```erb
+
+<p id="notice"><%= notice %></p>
+
+<%= render 'form', entry: @entry %>
+
+<table>
+
+  <tbody>
+    <% @entries.each do |entry| %>
+      <tr>
+        <td><%= link_to "added " + time_ago_in_words(entry.created_at) +" ago", edit_entry_path(entry) %></td>
+        <td><%= entry.thoughts %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+```
+We got rid of the table header and added a column to the left to show when the entry was created. Instead of having the CRUD buttons I am opting for just clicking on the entry time stamp to be able to edit or delete it. 

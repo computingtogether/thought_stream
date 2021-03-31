@@ -2,28 +2,14 @@
 
 <%= render 'form', entry: @entry %>
 
-<h1>Entries</h1>
-
 <table>
-  <thead>
-    <tr>
-      <th>Thoughts</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
 
   <tbody>
     <% @entries.each do |entry| %>
       <tr>
+        <td><%= link_to "added " + time_ago_in_words(entry.created_at) +" ago", edit_entry_path(entry) %></td>
         <td><%= entry.thoughts %></td>
-        <td><%= link_to 'Show', entry %></td>
-        <td><%= link_to 'Edit', edit_entry_path(entry) %></td>
-        <td><%= link_to 'Destroy', entry, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Entry', new_entry_path %>
