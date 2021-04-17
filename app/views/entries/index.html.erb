@@ -5,11 +5,30 @@
 <table>
 
   <tbody>
-    <% @entries.each do |entry| %>
+    <% @entries.reverse_each do |entry| %>
       <tr>
-        <td><%= link_to "added " + time_ago_in_words(entry.created_at) +" ago", edit_entry_path(entry) %></td>
-        <td><%= entry.thoughts %></td>
+        <td><%= link_to "added " + 
+                        time_ago_in_words(entry.created_at) +
+                        " ago", edit_entry_path(entry) %>
+        </td>
+        <td>
+        <% entry.thoughts.split(',').map(&:strip).map(&:downcase).sort.each_with_index do |thought,index| %>
+          <span style="color: rgb( <%= get_red(@entries, thought, entry.created_at.to_i) %> , 0 , 0);"> 
+            <%= thought.to_s %>
+          </span>
+            <%= "," unless index == entry.thoughts.split(',').size - 1 %> 
+        <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
+</table>
+<br>
+<table>
+  <% create_all_time_word_count_hash(@entries).each_pair do |k,v| %>
+    <tr>
+      <td><%= v %></td>
+      <td><%= k %></td>
+    </tr>
+  <% end %>
 </table>

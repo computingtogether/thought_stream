@@ -23,7 +23,6 @@ class EntriesController < ApplicationController
   # POST /entries or /entries.json
   def create
     @entry = Entry.new(entry_params)
-
     respond_to do |format|
       if @entry.save
         format.html { redirect_to entries_path }
